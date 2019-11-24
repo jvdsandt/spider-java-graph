@@ -1,0 +1,24 @@
+type Query {
+  methodById(id: ID!): Method
+  methods(limit: Int, offset: Int): [Method]
+  bookById(id: ID!): Book
+}
+
+type Book {
+  id: ID
+  name: String
+  pageCount: Int
+  author: Author
+}
+
+type Author {
+  id: ID
+  firstName: String
+  lastName: String
+}
+
+type Method {
+  id: ID
+  selector: String
+  source: String
+}
