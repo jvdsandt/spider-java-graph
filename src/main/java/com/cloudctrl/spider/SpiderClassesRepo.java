@@ -8,41 +8,35 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MethodsRepo {
+public class SpiderClassesRepo {
 
     @Autowired
     private NamedParameterJdbcTemplate template;
 
-    public Method findById(long id) {
+    public SpiderClass findById(long id) {
 
         return template.queryForObject(
-                "select id, selector, source from methods where id = :id",
+                "select id, type, class_type, name, comment from classes where id = :id",
                 ImmutableMap.of("id", id),
-                (rs, rowNum) -> new Method(
-                        rs.getLong(1),
-                        rs.getString(2),
-                        rs.getString(3)));
+                (rs, rowNum) -> new SpiderClass(rs));
     }
 
-    public List<Method> findAllLike(String selector, int limit, int offset) {
+    public List<SpiderClass> findAllLike(String name, int limit, int offset) {
         if (limit < 1 || limit > 10000) {
             throw new IllegalArgumentException("Invalid limit");
         }
         if (offset < 0) {
             throw new IllegalArgumentException("Invalid offset");
         }
-        String sel = (selector == null ? "" : selector) + "%";
+        String theName = (name == null ? "" : name) + "%";
         return template.query(
-                "select id, selector, source from methods " +
-                        "where selector like :sel " +
-                        "order by selector, id " +
+                "select id, type, class_type, name, comment from classes " +
+                        "where name like :name " +
+                        "order by name, id " +
                         "limit :limit offset :offset",
-                ImmutableMap.of("sel", sel,
+                ImmutableMap.of("name", name,
                         "limit", limit,
                         "offset", offset),
-                (rs, rowNum) -> new Method(
-                        rs.getLong(1),
-                        rs.getString(2),
-                        rs.getString(3)));
+                (rs, rowNum) -> new SpiderClass(rs));
     }
 }

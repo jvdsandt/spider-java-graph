@@ -1,24 +1,20 @@
 type Query {
   methodById(id: ID!): Method
-  methods(limit: Int, offset: Int): [Method]
-  bookById(id: ID!): Book
-}
-
-type Book {
-  id: ID
-  name: String
-  pageCount: Int
-  author: Author
-}
-
-type Author {
-  id: ID
-  firstName: String
-  lastName: String
+  methods(selector: String, limit: Int, offset: Int): [Method]
+  classById(id: ID!): Class
+  classes(name: String, limit: Int, offset: Int): [Class]
 }
 
 type Method {
   id: ID
   selector: String
   source: String
+}
+
+type Class {
+  id: ID
+  name: String!
+  comment: String
+  categories(meta: Boolean!): [String]
+  methods(meta: Boolean!, category: String): [Method]
 }
